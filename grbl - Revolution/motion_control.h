@@ -29,7 +29,7 @@
 
 #define HOMING_CYCLE_ALL  0  // Must be zero.
 #define HOMING_CYCLE_X    bit(X_AXIS)
-#define HOMING_CYCLE_A    bit(A_AXIS)   
+#define HOMING_CYCLE_Y    bit(Y_AXIS)
 #define HOMING_CYCLE_Z    bit(Z_AXIS)
 
 
