@@ -317,7 +317,7 @@ uint8_t gc_execute_line(char *line)
             gc_block.values.t = int_value;
 						break;
           case 'X': word_bit = WORD_X; gc_block.values.xyz[X_AXIS] = value; axis_words |= (1<<X_AXIS); break;
-          case 'Y': word_bit = WORD_Y; gc_block.values.xyz[Y_AXIS] = value; axis_words |= (1<<Y_AXIS); break;
+          //case 'Y': word_bit = WORD_Y; gc_block.values.xyz[A_AXIS] = value; axis_words |= (1<<A_AXIS); break;
           case 'Z': word_bit = WORD_Z; gc_block.values.xyz[Z_AXIS] = value; axis_words |= (1<<Z_AXIS); break;
           default: FAIL(STATUS_GCODE_UNSUPPORTED_COMMAND);
         }
@@ -469,11 +469,13 @@ uint8_t gc_execute_line(char *line)
   // Pre-convert XYZ coordinate values to millimeters, if applicable.
   uint8_t idx;
   if (gc_block.modal.units == UNITS_MODE_INCHES) {
-    for (idx=0; idx<N_AXIS; idx++) { // Axes indices are consistent, so loop may be used.
-      if (bit_istrue(axis_words,bit(idx)) ) {
-        gc_block.values.xyz[idx] *= MM_PER_INCH;
+     if (bit_istrue(axis_words,bit(0)) ) {     ///X axis
+        gc_block.values.xyz[0] *= MM_PER_INCH;
       }
-    }
+     if (bit_istrue(axis_words,bit(2)) ) {
+        gc_block.values.xyz[2] *= MM_PER_INCH;  //Z axis
+      }
+        // no conversion for the A axis
   }
 
   // [13. Cutter radius compensation ]: G41/42 NOT SUPPORTED. Error, if enabled while G53 is active.
@@ -781,9 +783,9 @@ uint8_t gc_execute_line(char *line)
 
             // Convert IJK values to proper units.
             if (gc_block.modal.units == UNITS_MODE_INCHES) {
-              for (idx=0; idx<N_AXIS; idx++) { // Axes indices are consistent, so loop may be used to save flash space.
-                if (ijk_words & bit(idx)) { gc_block.values.ijk[idx] *= MM_PER_INCH; }
-              }
+                if (ijk_words & bit(0)) { gc_block.values.ijk[0] *= MM_PER_INCH; }  // X axis
+                if (ijk_words & bit(2)) { gc_block.values.ijk[2] *= MM_PER_INCH; } // Z axis
+                // A axis doe not get converted
             }
 
             // Arc radius from center to target

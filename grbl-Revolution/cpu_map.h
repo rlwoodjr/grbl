@@ -68,7 +68,7 @@
     #define Z_LIMIT_BIT    3  // Uno Digital Pin 11
   #endif
   #if !defined(ENABLE_DUAL_AXIS)
-    #define LIMIT_MASK     ((1<<X_LIMIT_BIT)|(1<<A_LIMIT_BIT)|(1<<Z_LIMIT_BIT)) // All limit bits
+  #define LIMIT_MASK     ((1<<X_LIMIT_BIT)|(1<<A_LIMIT_BIT)|(1<<Z_LIMIT_BIT)) // All limit bits
   #endif
   #define LIMIT_INT        PCIE0  // Pin change interrupt enable pin
   #define LIMIT_INT_vect   PCINT0_vect
