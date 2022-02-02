@@ -58,7 +58,7 @@ void limits_init()
   #ifdef ENABLE_SOFTWARE_DEBOUNCE
     MCUSR &= ~(1<<WDRF);
     WDTCSR |= (1<<WDCE) | (1<<WDE);
-    WDTCSR = (1<<WDP2); // Set time-out at ~250msec.
+    WDTCSR = (1<<WDP0); // Set time-out at ~32msec.
   #endif
 }
 
@@ -106,7 +106,7 @@ uint8_t limits_get_state()
 // homing cycles and will not respond correctly. Upon user request or need, there may be a
 // special pinout for an e-stop, but it is generally recommended to just directly connect
 // your e-stop switch to the Arduino reset pin, since it is the most correct way to do this.
-
+#ifndef ENABLE_SOFTWARE_DEBOUNCE
   ISR(LIMIT_INT_vect) // DEFAULT: Limit pin change interrupt process.
   {
     // Ignore limit switches if already in an alarm state or in-process of executing an alarm.
@@ -129,7 +129,23 @@ uint8_t limits_get_state()
       }
     }
   }
-
+#else // OPTIONAL: Software debounce limit pin routine.
+  // Upon limit pin change, enable watchdog timer to create a short delay. 
+  ISR(LIMIT_INT_vect) { if (!(WDTCSR & (1<<WDIE))) { WDTCSR |= (1<<WDIE); } }
+  ISR(WDT_vect) // Watchdog timer ISR
+  {
+    WDTCSR &= ~(1<<WDIE); // Disable watchdog timer. 
+    if (sys.state != STATE_ALARM) {  // Ignore if already in alarm state. 
+      if (!(sys_rt_exec_alarm)) {
+        // Check limit pin state. 
+        if (limits_get_state()) {
+          mc_reset(); // Initiate system kill.
+          system_set_exec_alarm(EXEC_ALARM_HARD_LIMIT); // Indicate hard limit critical event
+        }
+      }  
+    }
+  }
+#endif
 
 // Homes the specified cycle axes, sets the machine position, and performs a pull-off motion after
 // completing. Homing is a special motion case, which involves rapid uncontrolled stops to locate

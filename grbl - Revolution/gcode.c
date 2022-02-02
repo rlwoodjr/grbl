@@ -296,14 +296,14 @@ uint8_t gc_execute_line(char *line)
            legal g-code words and stores their value. Error-checking is performed later since some
            words (I,J,K,L,P,R) have multiple connotations and/or depend on the issued commands. */
         switch(letter){
-          case 'A': word_bit = WORD_A; gc_block.values.xyz[A_AXIS] = value; axis_words |= (1<<A_AXIS); break; 
+          // case 'A': // Not supported
           // case 'B': // Not supported
           // case 'C': // Not supported
           // case 'D': // Not supported
           case 'F': word_bit = WORD_F; gc_block.values.f = value; break;
           // case 'H': // Not supported
           case 'I': word_bit = WORD_I; gc_block.values.ijk[X_AXIS] = value; ijk_words |= (1<<X_AXIS); break;
-          case 'J': word_bit = WORD_J; gc_block.values.ijk[A_AXIS] = value; ijk_words |= (1<<A_AXIS); break;
+          case 'J': word_bit = WORD_J; gc_block.values.ijk[Y_AXIS] = value; ijk_words |= (1<<Y_AXIS); break;
           case 'K': word_bit = WORD_K; gc_block.values.ijk[Z_AXIS] = value; ijk_words |= (1<<Z_AXIS); break;
           case 'L': word_bit = WORD_L; gc_block.values.l = int_value; break;
           case 'N': word_bit = WORD_N; gc_block.values.n = trunc(value); break;
@@ -452,17 +452,21 @@ uint8_t gc_execute_line(char *line)
   }
 
   // [11. Set active plane ]: N/A
-   switch (gc_block.modal.plane_select) {
+  switch (gc_block.modal.plane_select) {
     case PLANE_SELECT_XY:
       axis_0 = X_AXIS;
-      axis_1 = A_AXIS;
+      axis_1 = Y_AXIS;
       axis_linear = Z_AXIS;
       break;
-      default: // default
-       axis_0 = X_AXIS;
-       axis_1 = A_AXIS;
-       axis_linear = Z_AXIS;
-
+    case PLANE_SELECT_ZX:
+      axis_0 = Z_AXIS;
+      axis_1 = X_AXIS;
+      axis_linear = Y_AXIS;
+      break;
+    default: // case PLANE_SELECT_YZ:
+      axis_0 = Y_AXIS;
+      axis_1 = Z_AXIS;
+      axis_linear = X_AXIS;
   }
 
   // [12. Set length units ]: N/A
@@ -828,7 +832,7 @@ uint8_t gc_execute_line(char *line)
   } else {
     bit_false(value_words,(bit(WORD_N)|bit(WORD_F)|bit(WORD_S)|bit(WORD_T))); // Remove single-meaning value words.
   }
-  if (axis_command) { bit_false(value_words,(bit(WORD_X)|bit(WORD_A)|bit(WORD_Z))); } // Remove axis words.
+  if (axis_command) { bit_false(value_words,(bit(WORD_X)|bit(WORD_Y)|bit(WORD_Z))); } // Remove axis words.
   if (value_words) { FAIL(STATUS_GCODE_UNUSED_WORDS); } // [Unused words]
 
   /* -------------------------------------------------------------------------------------

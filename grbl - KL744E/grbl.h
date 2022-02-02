@@ -6,7 +6,6 @@
 
   Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
- 
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
 
@@ -23,8 +22,8 @@
 #define grbl_h
 
 // Grbl versioning system
-#define GRBL_VERSION "KL744E 1.1h"
-#define GRBL_VERSION_BUILD "20220202"
+#define GRBL_VERSION "1.1h"
+#define GRBL_VERSION_BUILD "20190830"
 
 // Define standard libraries used by Grbl.
 #include <avr/io.h>
