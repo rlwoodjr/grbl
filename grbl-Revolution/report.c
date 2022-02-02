@@ -35,15 +35,16 @@ static void report_util_line_feed() { printPgmString(PSTR("\r\n")); }
 static void report_util_feedback_line_feed() { serial_write(']'); report_util_line_feed(); }
 static void report_util_gcode_modes_G() { printPgmString(PSTR(" G")); }
 static void report_util_gcode_modes_M() { printPgmString(PSTR(" M")); }
+	
 // static void report_util_comment_line_feed() { serial_write(')'); report_util_line_feed(); }
-static void report_util_axis_values(float *axis_value) {   
-  
+static void report_util_axis_values(float *axis_value) {
       printFloat_CoordValue(axis_value[0]);
       printPgmString(PSTR(",0.000,"));
       printFloat_CoordValue(axis_value[2]);
       serial_write(',');
       printFloat_CoordValue(axis_value[1]);
-  }
+
+}
 
 /*
 static void report_util_setting_string(uint8_t n) {
@@ -167,12 +168,13 @@ void report_feedback_message(uint8_t message_code)
 }
 
 
-
 // Welcome message
 void report_init_message()
 {
-  printPgmString(PSTR("\r\n[MSG:Grbl_Revolution_BobsCNC]\r\n[MSG:Axis count 4]\r\n"));  
-}
+	  printPgmString(PSTR("\r\n[MSG:Grbl_Revolution_BobsCNC]\r\n[MSG:Axis count 4]\r\n"));
+	  printPgmString(PSTR("\r\nGrbl " GRBL_VERSION " ['$' for help]\r\n"));
+	
+ }
 
 // Grbl help message
 void report_grbl_help() {

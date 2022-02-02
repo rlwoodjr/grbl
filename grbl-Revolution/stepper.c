@@ -380,7 +380,7 @@ ISR(TIMER1_COMPA_vect)
       #ifdef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
         // With AMASS enabled, adjust Bresenham axis increment counters according to AMASS level.
         st.steps[X_AXIS] = st.exec_block->steps[X_AXIS] >> st.exec_segment->amass_level;
-        st.steps[A_AXIS] = st.exec_block->steps[A_AXIS] >> st.exec_segment->amass_level; 
+        st.steps[A_AXIS] = st.exec_block->steps[A_AXIS] >> st.exec_segment->amass_level;
         st.steps[Z_AXIS] = st.exec_block->steps[Z_AXIS] >> st.exec_segment->amass_level;
       #endif
 
@@ -433,9 +433,7 @@ ISR(TIMER1_COMPA_vect)
   #endif
   if (st.counter_y > st.exec_block->step_event_count) {
     st.step_outbits |= (1<<A_STEP_BIT);
-    #if defined(ENABLE_DUAL_AXIS) && (DUAL_AXIS_SELECT == A_AXIS)
-      st.step_outbits_dual = (1<<DUAL_STEP_BIT);
-    #endif
+
     st.counter_y -= st.exec_block->step_event_count;
     if (st.exec_block->direction_bits & (1<<A_DIRECTION_BIT)) { sys_position[A_AXIS]--; }
     else { sys_position[A_AXIS]++; }

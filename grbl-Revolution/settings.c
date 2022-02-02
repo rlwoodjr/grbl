@@ -47,16 +47,16 @@ const __flash settings_t defaults = {\
              (DEFAULT_INVERT_LIMIT_PINS << BIT_INVERT_LIMIT_PINS) | \
              (DEFAULT_INVERT_PROBE_PIN << BIT_INVERT_PROBE_PIN),
     .steps_per_mm[X_AXIS] = DEFAULT_X_STEPS_PER_MM,
-    .steps_per_mm[A_AXIS] = DEFAULT_Y_STEPS_PER_MM,
+    .steps_per_mm[A_AXIS] = DEFAULT_A_STEPS_PER_MM,
     .steps_per_mm[Z_AXIS] = DEFAULT_Z_STEPS_PER_MM,
     .max_rate[X_AXIS] = DEFAULT_X_MAX_RATE,
-    .max_rate[A_AXIS] = DEFAULT_Y_MAX_RATE,
+    .max_rate[A_AXIS] = DEFAULT_A_MAX_RATE,
     .max_rate[Z_AXIS] = DEFAULT_Z_MAX_RATE,
     .acceleration[X_AXIS] = DEFAULT_X_ACCELERATION,
-    .acceleration[A_AXIS] = DEFAULT_Y_ACCELERATION,
+    .acceleration[A_AXIS] = DEFAULT_A_ACCELERATION,
     .acceleration[Z_AXIS] = DEFAULT_Z_ACCELERATION,
     .max_travel[X_AXIS] = (-DEFAULT_X_MAX_TRAVEL),
-    .max_travel[A_AXIS] = (-DEFAULT_Y_MAX_TRAVEL),
+    .max_travel[A_AXIS] = (-DEFAULT_A_MAX_TRAVEL),
     .max_travel[Z_AXIS] = (-DEFAULT_Z_MAX_TRAVEL)};
 
 

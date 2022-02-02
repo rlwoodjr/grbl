@@ -22,8 +22,9 @@
 #define grbl_h
 
 // Grbl versioning system
-#define GRBL_VERSION "Revolution 1.1h"
-#define GRBL_VERSION_BUILD "20220202"
+#define GRBL_VERSION "1.1h"
+#define GRBL_VERSION_BUILD "20210102"
+
 
 
 // Define standard libraries used by Grbl.

@@ -149,7 +149,7 @@
 #define WORD_X  10
 #define WORD_Y  11
 #define WORD_Z  12
-#define WORD_A  13  
+#define WORD_A  13
 
 // Define g-code parser position updating flags
 #define GC_UPDATE_POS_TARGET   0 // Must be zero
