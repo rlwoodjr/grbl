@@ -638,7 +638,7 @@
 // run out of flash to fit on an Arduino 328p/Uno. Only X and Y axes are supported. Variable
 // spindle/laser mode IS supported, but only for one config option. Core XY, spindle direction
 // pin, and M7 mist coolant are disabled/not supported.
- #define ENABLE_DUAL_AXIS	// Default disabled. Uncomment to enable.
+#define ENABLE_DUAL_AXIS	// Default disabled. Uncomment to enable.
 
 // Select the one axis to mirror another motor. Only X and Y axis is supported at this time.
 #define DUAL_AXIS_SELECT  X_AXIS  // Must be either X_AXIS or Y_AXIS
@@ -672,7 +672,7 @@
 // most user setups to accomodate. It would best be implemented by sharing all limit switches
 // on pins D9/D10 (as [X1,Z]/[X2,Y] or [X,Y2]/[Y1,Z]), home each axis independently, and 
 // updating lots of code to ensure everything is running correctly.
- #define DUAL_AXIS_CONFIG_CNC_SHIELD_CLONE  // Uncomment to select. Comment other configs.
+#define DUAL_AXIS_CONFIG_CNC_SHIELD_CLONE  // Uncomment to select. Comment other configs.
 
 
 /* ---------------------------------------------------------------------------------------
