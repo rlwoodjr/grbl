@@ -66,7 +66,6 @@ ISR(CONTROL_INT_vect){if (!(WDTCSR & (1<<WDIE))) { WDTCSR |= (1<<WDIE); }}   //B
 ISR(WDT_vect) // Watchdog timer ISR
 {
 	WDTCSR &= ~(1<<WDIE); // Disable watchdog timer.
-
   uint8_t pin = system_control_get_state();
   if (pin) {
     if (bit_istrue(pin,CONTROL_PIN_INDEX_RESET)) {

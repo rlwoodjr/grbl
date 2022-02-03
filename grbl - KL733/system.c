@@ -62,15 +62,14 @@ uint8_t system_control_get_state()
 // its ready. This works exactly like the character-based realtime commands when picked off
 // directly from the incoming serial data stream.
 #ifdef ENABLE_SOFTWARE_DEBOUNCE
-ISR(CONTROL_INT_vect){if (!(WDTCSR & (1<<WDIE))) { WDTCSR |= (1<<WDIE); }}   //BobsCNC
-ISR(WDT_vect) // Watchdog timer ISR
-{
-	WDTCSR &= ~(1<<WDIE); // Disable watchdog timer.
-
+ISR(CONTROL_INT_vect){if (!(WDTCSR & (1<<WDIE))) { WDTCSR |= (1<<WDIE); }}   //BobsCNC  
+  ISR(WDT_vect) // Watchdog timer ISR
+   {
+	  WDTCSR &= ~(1<<WDIE); // Disable watchdog timer.
   uint8_t pin = system_control_get_state();
   if (pin) {
     if (bit_istrue(pin,CONTROL_PIN_INDEX_RESET)) {
-      mc_reset();
+       mc_reset();
     }
     if (bit_istrue(pin,CONTROL_PIN_INDEX_CYCLE_START)) {
       bit_true(sys_rt_exec_state, EXEC_CYCLE_START);
@@ -107,7 +106,7 @@ ISR(CONTROL_INT_vect)
 		}
 	}
 
- #endif
+#endif
 
 // Returns if safety door is ajar(T) or closed(F), based on pin state.
 uint8_t system_check_safety_door_ajar()
