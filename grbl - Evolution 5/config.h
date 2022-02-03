@@ -336,7 +336,7 @@
 // enable pin will output 5V for maximum RPM with 256 intermediate levels and 0V when disabled.
 // NOTE: IMPORTANT for Arduino Unos! When enabled, the Z-limit pin D11 and spindle enable pin D12 switch!
 // The hardware PWM output on pin D11 is required for variable spindle output voltages.
-//#define VARIABLE_SPINDLE // Default enabled. Comment to disable.
+// #define VARIABLE_SPINDLE // Default enabled. Comment to disable.
 
 // Used by variable spindle output only. This forces the PWM output to a minimum duty cycle when enabled.
 // The PWM pin will still read 0V when the spindle is disabled. Most users will not need this option, but
@@ -659,7 +659,7 @@
 // NOTE: Protoneer CNC Shield v3.51 has A.STP and A.DIR wired to pins A4 and A3 respectively.
 // The variable spindle (i.e. laser mode) build option works and may be enabled or disabled.
 // Coolant pin A3 is moved to D13, replacing spindle direction.
-//#define DUAL_AXIS_CONFIG_PROTONEER_V3_51    // Uncomment to select. Comment other configs.
+// #define DUAL_AXIS_CONFIG_PROTONEER_V3_51    // Uncomment to select. Comment other configs.
 
 // NOTE: Arduino CNC Shield Clone (Originally Protoneer v3.0) has A.STP and A.DIR wired to 
 // D12 and D13, respectively. With the limit pins and stepper enable pin on this same port,
