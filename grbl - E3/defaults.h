@@ -29,7 +29,7 @@
 
 #ifdef DEFAULTS_GENERIC
  // Grbl generic default settings. Should work across different machines.(BOBSCNC)
-  #define DEFAULT_X_STEPS_PER_MM 80
+#define DEFAULT_X_STEPS_PER_MM 80
   #define DEFAULT_Y_STEPS_PER_MM 80
   #define DEFAULT_Z_STEPS_PER_MM 2267.717
   #define DEFAULT_X_MAX_RATE 10000.0 // mm/min
@@ -50,10 +50,10 @@
   #define DEFAULT_STATUS_REPORT_MASK 1 // MPos enabled
   #define DEFAULT_JUNCTION_DEVIATION 0.01 // mm
   #define DEFAULT_ARC_TOLERANCE 0.002 // mm
-  #define DEFAULT_REPORT_INCHES 1 // false
+  #define DEFAULT_REPORT_INCHES 1 // true
   #define DEFAULT_INVERT_ST_ENABLE 0 // false
-  #define DEFAULT_INVERT_LIMIT_PINS 1 // false
-  #define DEFAULT_SOFT_LIMIT_ENABLE 1 // false
+  #define DEFAULT_INVERT_LIMIT_PINS 1 // true
+  #define DEFAULT_SOFT_LIMIT_ENABLE 1 // true
   #define DEFAULT_HARD_LIMIT_ENABLE 0  // false
   #define DEFAULT_INVERT_PROBE_PIN 0 // false
   #define DEFAULT_LASER_MODE 0 // false
