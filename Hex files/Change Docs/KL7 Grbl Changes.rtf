@@ -1,0 +1,149 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1033\deflangfe1033{\fonttbl{\f0\fswiss\fprq2\fcharset0 Calibri;}{\f1\fmodern\fprq1\fcharset0 Consolas;}}
+{\colortbl ;\red0\green0\blue255;\red255\green255\blue255;\red163\green21\blue21;\red160\green0\blue160;\red0\green128\blue0;\red0\green0\blue0;\red255\green0\blue0;\red255\green255\blue0;\red136\green0\blue0;\red0\green0\blue128;}
+{\*\generator Riched20 10.0.19041}{\*\mmathPr\mnaryLim0\mdispDef1\mwrapIndent1440 }\viewkind4\uc1 
+\pard\nowidctlpar\sa200\sl276\slmult1\f0\fs22\lang9\par
+\par
+\par
+\b\fs32 grbl.h - change version\b0\fs22\par
+\cf1\highlight2\f1\fs19 #define\cf3  \cf4 GRBL_VERSION\cf3  "1.1h KL755" \cf5\par
+\cf0\b\f0\fs32\lang1033 defaults.h\cf5\b0\f1\fs19\lang9\par
+
+\pard\nowidctlpar\sa200\cf1 #ifdef\cf3  \cf6 DEFAULTS_GENERIC\cf3   \cf6\par
+\cf3   \cf5 // Grbl generic default settings. Should work across different machines.\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_X_STEPS_PER_MM\cf3  \cf6 40.0\par
+\cf1   #define\cf3  \cf4 DEFAULT_Y_STEPS_PER_MM\cf3  \cf6 40.0\par
+\cf1   #define\cf3  \cf4 DEFAULT_Z_STEPS_PER_MM\cf3  \cf6 500.0\par
+\cf1   #define\cf3  \cf4 DEFAULT_X_MAX_RATE\cf3  \cf6 25400.0\cf3  \cf5 // mm/min\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_Y_MAX_RATE\cf3  \cf6 25400.0\cf3  \cf5 // mm/min\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_Z_MAX_RATE\cf3  \cf6 2000.0\cf3  \cf5 // mm/min\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_X_ACCELERATION\cf3  \cf6 (500.0*60*60)\cf3  \cf5 // 10*60*60 mm/min^2 = 10 mm/sec^2\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_Y_ACCELERATION\cf3  \cf6 (500.0*60*60)\cf3  \cf5 // 10*60*60 mm/min^2 = 10 mm/sec^2\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_Z_ACCELERATION\cf3  \cf6 (500.0*60*60)\cf3  \cf5 // 10*60*60 mm/min^2 = 10 mm/sec^2\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_X_MAX_TRAVEL\cf3  \cf6 1530.0\cf3  \cf5 // mm NOTE: Must be a positive value.\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_Y_MAX_TRAVEL\cf3  \cf6 1530.0\cf3  \cf5 // mm NOTE: Must be a positive value.\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_Z_MAX_TRAVEL\cf3  \cf6 127.0\cf3  \cf5 // mm NOTE: Must be a positive value.\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_SPINDLE_RPM_MAX\cf3  \cf6 1000.0\cf3  \cf5 // rpm\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_SPINDLE_RPM_MIN\cf3  \cf6 0.0\cf3  \cf5 // rpm\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_STEP_PULSE_MICROSECONDS\cf3  \cf6 10\par
+\cf1   #define\cf3  \cf4 DEFAULT_STEPPING_INVERT_MASK\cf3  \cf6 0\par
+\cf1   #define\cf3  \cf4 DEFAULT_DIRECTION_INVERT_MASK\cf3  \cf6 12\par
+\cf1   #define\cf3  \cf4 DEFAULT_STEPPER_IDLE_LOCK_TIME\cf3  \cf6 255\cf3  \cf5 // msec (0-254, 255 keeps steppers enabled)\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_STATUS_REPORT_MASK\cf3  \cf6 1\cf3  \cf5 // MPos enabled\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_JUNCTION_DEVIATION\cf3  \cf6 0.01\cf3  \cf5 // mm\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_ARC_TOLERANCE\cf3  \cf6 0.002\cf3  \cf5 // mm\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_REPORT_INCHES\cf3  \cf6 1\cf3  \cf5 // false\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_INVERT_ST_ENABLE\cf3  \cf6 0\cf3  \cf5 // false\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_INVERT_LIMIT_PINS\cf3  \cf6 0\cf3  \cf5 // false\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_SOFT_LIMIT_ENABLE\cf3  \cf6 1\cf3  \cf5 // false\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_HARD_LIMIT_ENABLE\cf3  \cf6 0\cf3   \cf5 // false\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_INVERT_PROBE_PIN\cf3  \cf6 0\cf3  \cf5 // false\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_LASER_MODE\cf3  \cf6 0\cf3  \cf5 // false\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_HOMING_ENABLE\cf3  \cf6 1\cf3   \cf5 // true\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_HOMING_DIR_MASK\cf3  \cf6 3\cf3  \cf5 // move positive dir\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_HOMING_FEED_RATE\cf3  \cf6 250.0\cf3  \cf5 // mm/min\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_HOMING_SEEK_RATE\cf3  \cf6 4000.0\cf3  \cf5 // mm/min\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_HOMING_DEBOUNCE_DELAY\cf3  \cf6 250\cf3  \cf5 // msec (0-65k)\cf6\par
+\cf1   #define\cf3  \cf4 DEFAULT_HOMING_PULLOFF\cf3  \cf6 5.0\cf3  \cf5 // mm\cf6\par
+\cf1 #endif\par
+\par
+\cf0\b\f0\fs32\lang1033 config.h\par
+\cf1\b0\f1\fs19 #define\cf3  \cf4 HOMING_FORCE_SET_ORIGIN\cf3  \cf5 // Uncomment to enable. 129\par
+\cf1 #define\cf3  \cf4 ENABLE_SOFTWARE_DEBOUNCE\cf3  \cf5 // Default disabled. Uncomment to enable. 472\par
+\cf1 #define\cf3  \cf4 ENABLE_DUAL_AXIS\cf3\tab\cf5 // Default disabled. Uncomment to enable.  641\par
+\cf0\b\f0\fs32 limits.c\par
+\cf3\b0\f1\fs19     \cf6 WDTCSR\cf3  \cf6 =\cf3  \cf6 (1<<WDP2);\cf3  \cf5 // Set time-out at ~250msec.  61\cf6\par
+\cf1\par
+\cf7\fs40 Remove highlighted\cf6\fs19\par
+\cf1\highlight8 #ifndef\cf3  \cf4 ENABLE_SOFTWARE_DEBOUNCE\cf6\highlight2\par
+\cf3   \cf9 ISR\cf6 (\cf4 LIMIT_INT_vect\cf6 )\cf3  \cf5 // DEFAULT: Limit pin change interrupt process.\cf6\par
+\cf3   \cf6\{\par
+\cf3     \cf5 // Ignore limit switches if already in an alarm state or in-process of executing an alarm.\cf6\par
+\cf3     \cf5 // When in the alarm state, Grbl should have been reset or will force a reset, so any pending\cf6\par
+\cf3     \cf5 // moves in the planner and serial buffers are all cleared and newly sent blocks will be\cf6\par
+\cf3     \cf5 // locked out until a homing cycle or a kill lock command. Allows the user to disable the hard\cf6\par
+\cf3     \cf5 // limit setting if their limits are constantly triggering after a reset and move their axes.\cf6\par
+\cf3     \cf1 if\cf3  \cf6 (\cf10 sys\cf6 .\cf10 state\cf3  \cf6 !=\cf3  \cf4 STATE_ALARM\cf6 )\cf3  \cf6\{\par
+\cf3       \cf1 if\cf3  \cf6 (!(\cf10 sys_rt_exec_alarm\cf6 ))\cf3  \cf6\{\par
+\cf1         #ifdef\cf3  \cf6 HARD_LIMIT_FORCE_STATE_CHECK\par
+\cf3           \cf5 // Check limit pin state.\cf6\par
+\cf3           \cf1 if\cf3  \cf6 (\cf9 limits_get_state\cf6 ())\cf3  \cf6\{\par
+\cf3             \cf9 mc_reset\cf6 ();\cf3  \cf5 // Initiate system kill.\cf6\par
+\cf3             \cf9 system_set_exec_alarm\cf6 (\cf4 EXEC_ALARM_HARD_LIMIT\cf6 );\cf3  \cf5 // Indicate hard limit critical event\cf6\par
+\cf3           \cf6\}\par
+\cf1         #else\cf6\par
+\cf3           \cf9 mc_reset\cf6 ();\cf3  \cf5 // Initiate system kill.\cf6\par
+\cf3           \cf9 system_set_exec_alarm\cf6 (\cf4 EXEC_ALARM_HARD_LIMIT\cf6 );\cf3  \cf5 // Indicate hard limit critical event\cf6\par
+\cf1         #endif\cf6\par
+\cf3       \cf6\}\par
+\cf3     \cf6\}\par
+\cf3   \cf6\}\par
+\cf1\highlight8 #else\cf3  \cf5 // OPTIONAL: Software debounce limit pin routine.\cf6\par
+\cf3   \cf5 // Upon limit pin change, enable watchdog timer to create a short delay. \cf6\par
+\cf3   \cf9 ISR\cf6 (\cf4 LIMIT_INT_vect\cf6 )\cf3  \cf6\{\cf3  \cf1 if\cf3  \cf6 (!(WDTCSR\cf3  \cf6 &\cf3  \cf6 (1<<WDIE)))\cf3  \cf6\{\cf3  \cf6 WDTCSR\cf3  \cf6 |=\cf3  \cf6 (1<<WDIE);\cf3  \cf6\}\cf3  \cf6\}\par
+\cf3   \cf9 ISR\cf6 (WDT_vect)\cf3  \cf5 // Watchdog timer ISR\cf6\par
+\cf3   \cf6\{\par
+\cf3     \cf6 WDTCSR\cf3  \cf6 &=\cf3  \cf6 ~(1<<WDIE);\cf3  \cf5 // Disable watchdog timer. \cf6\par
+\cf3     \cf1 if\cf3  \cf6 (\cf10 sys\cf6 .\cf10 state\cf3  \cf6 !=\cf3  \cf4 STATE_ALARM\cf6 )\cf3  \cf6\{\cf3   \cf5 // Ignore if already in alarm state. \cf6\par
+\cf3       \cf1 if\cf3  \cf6 (!(\cf10 sys_rt_exec_alarm\cf6 ))\cf3  \cf6\{\par
+\cf3         \cf5 // Check limit pin state. \cf6\par
+\cf3         \cf1 if\cf3  \cf6 (\cf9 limits_get_state\cf6 ())\cf3  \cf6\{\par
+\cf3           \cf9 mc_reset\cf6 ();\cf3  \cf5 // Initiate system kill.\cf6\par
+\cf3           \cf9 system_set_exec_alarm\cf6 (\cf4 EXEC_ALARM_HARD_LIMIT\cf6 );\cf3  \cf5 // Indicate hard limit critical event\cf6\par
+\cf3         \cf6\}\par
+\cf3       \cf6\}\cf3   \cf6\par
+\cf3     \cf6\}\par
+\cf3   \cf6\}\par
+\cf1 #endif\par
+\par
+\par
+\cf0\highlight2\b\f0\fs32 system.c\cf1\highlight8\b0\f1\fs19\par
+\cf7\highlight2\fs40 Add highlighted\cf1\highlight8\fs19\par
+#ifdef\cf3  \cf4 ENABLE_SOFTWARE_DEBOUNCE\cf6\highlight2\par
+\cf9 ISR\cf6 (\cf4 CONTROL_INT_vect\cf6 )\cf3  \cf6\highlight8\{\cf3  \cf1 if\cf3  \cf6 (!(WDTCSR\cf3  \cf6 &\cf3  \cf6 (1<<WDIE)))\cf3  \cf6\{\cf3  \cf6 WDTCSR\cf3  \cf6 |=\cf3  \cf6 (1<<WDIE);\cf3  \cf6\}\}\cf3  \cf5 //BobsCNC65  \cf6\par
+\cf3   \cf9 ISR\cf6 (WDT_vect)\cf3  \cf5 // Watchdog timer ISR\cf6\par
+\cf3    \cf6\{\par
+\cf3\tab   \cf6 WDTCSR\cf3  \cf6 &=\cf3  \cf6 ~(1<<WDIE);\cf3  \cf5 // Disable watchdog timer.\cf6\par
+\cf3\highlight2   \cf6 uint8_t\cf3  \cf10 pin\cf3  \cf6 =\cf3  \cf9 system_control_get_state\cf6 ();\par
+\cf3   \cf1 if\cf3  \cf6 (\cf10 pin\cf6 )\cf3  \cf6\{\par
+\cf3     \cf1 if\cf3  \cf6 (\cf4 bit_istrue\cf6 (\cf10 pin\cf6 ,\cf4 CONTROL_PIN_INDEX_RESET\cf6 ))\cf3  \cf6\{\par
+\cf3        \cf9 mc_reset\cf6 ();\par
+\cf3     \cf6\}\par
+\cf3     \cf1 if\cf3  \cf6 (\cf4 bit_istrue\cf6 (\cf10 pin\cf6 ,\cf4 CONTROL_PIN_INDEX_CYCLE_START\cf6 ))\cf3  \cf6\{\par
+\cf3       \cf4 bit_true\cf6 (\cf10 sys_rt_exec_state\cf6 ,\cf3  \cf4 EXEC_CYCLE_START\cf6 );\par
+\cf3     \cf6\}\par
+\cf1     #ifndef\cf3  \cf6 ENABLE_SAFETY_DOOR_INPUT_PIN\par
+\cf3       \cf1 if\cf3  \cf6 (\cf4 bit_istrue\cf6 (\cf10 pin\cf6 ,\cf4 CONTROL_PIN_INDEX_FEED_HOLD\cf6 ))\cf3  \cf6\{\par
+\cf3         \cf4 bit_true\cf6 (\cf10 sys_rt_exec_state\cf6 ,\cf3  \cf4 EXEC_FEED_HOLD\cf6 );\par
+\cf1     #else\cf6\par
+\cf3       \cf1 if\cf3  \cf6 (\cf4 bit_istrue\cf6 (\cf10 pin\cf6 ,\cf4 CONTROL_PIN_INDEX_SAFETY_DOOR\cf6 ))\cf3  \cf6\{\par
+\cf3         \cf4 bit_true\cf6 (\cf10 sys_rt_exec_state\cf6 ,\cf3  \cf4 EXEC_SAFETY_DOOR\cf6 );\par
+\cf1     #endif\cf6\par
+\cf3     \cf6\}\par
+\cf3   \cf6\}\par
+\}\par
+\cf1\highlight8 #else\cf6\par
+\cf9 ISR\cf6 (\cf4 CONTROL_INT_vect\cf6 )\par
+\{\par
+\cf3\tab\cf6 uint8_t\cf3  \cf10 pin\cf3  \cf6 =\cf3  \cf9 system_control_get_state\cf6 ();\par
+\cf3\tab\cf1 if\cf3  \cf6 (\cf10 pin\cf6 )\cf3  \cf6\{\par
+\cf3\tab\tab\cf1 if\cf3  \cf6 (\cf4 bit_istrue\cf6 (\cf10 pin\cf6 ,\cf4 CONTROL_PIN_INDEX_RESET\cf6 ))\cf3  \cf6\{\par
+\cf3\tab\tab\tab\cf9 mc_reset\cf6 ();\par
+\cf3\tab\tab\cf6\}\par
+\cf3\tab\tab\cf1 if\cf3  \cf6 (\cf4 bit_istrue\cf6 (\cf10 pin\cf6 ,\cf4 CONTROL_PIN_INDEX_CYCLE_START\cf6 ))\cf3  \cf6\{\par
+\cf3\tab\tab\tab\cf4 bit_true\cf6 (\cf10 sys_rt_exec_state\cf6 ,\cf3  \cf4 EXEC_CYCLE_START\cf6 );\par
+\cf3\tab\tab\cf6\}\par
+\cf1\tab\tab #ifndef\cf3  \cf6 ENABLE_SAFETY_DOOR_INPUT_PIN\par
+\cf3\tab\tab\cf1 if\cf3  \cf6 (\cf4 bit_istrue\cf6 (\cf10 pin\cf6 ,\cf4 CONTROL_PIN_INDEX_FEED_HOLD\cf6 ))\cf3  \cf6\{\par
+\cf3\tab\tab\tab\cf4 bit_true\cf6 (\cf10 sys_rt_exec_state\cf6 ,\cf3  \cf4 EXEC_FEED_HOLD\cf6 );\par
+\cf1\tab\tab\tab #else\cf6\par
+\cf3\tab\tab\tab\cf1 if\cf3  \cf6 (\cf4 bit_istrue\cf6 (\cf10 pin\cf6 ,\cf4 CONTROL_PIN_INDEX_SAFETY_DOOR\cf6 ))\cf3  \cf6\{\par
+\cf3\tab\tab\tab\tab\cf4 bit_true\cf6 (\cf10 sys_rt_exec_state\cf6 ,\cf3  \cf4 EXEC_SAFETY_DOOR\cf6 );\par
+\cf1\tab\tab\tab\tab #endif\cf6\par
+\cf3\tab\tab\tab\cf6\}\par
+\cf3\tab\tab\cf6\}\par
+\cf3\tab\cf6\}\par
+\cf1 #endif\cf5\par
+\highlight2\par
+\lang9\par
+}
+ 

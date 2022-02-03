@@ -1,0 +1,167 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1033\deflangfe1033{\fonttbl{\f0\fmodern\fprq1\fcharset0 Consolas;}{\f1\fswiss\fprq2\fcharset0 Calibri;}}
+{\colortbl ;\red0\green0\blue255;\red255\green255\blue255;\red163\green21\blue21;\red160\green0\blue160;\red0\green0\blue0;\red0\green128\blue0;\red136\green0\blue0;\red0\green0\blue128;}
+{\*\generator Riched20 10.0.19041}{\*\mmathPr\mdispDef1\mwrapIndent1440 }\viewkind4\uc1 
+\pard\widctlpar\cf1\highlight2\f0\fs19 Grbl.h\par
+#define\cf3  \cf4 GRBL_VERSION\cf3  "Revolution 1.1h"\cf5\par
+
+\pard\nowidctlpar\sa200\sl276\slmult1\cf1 #define\cf3  \cf4 GRBL_VERSION_BUILD\cf3  "20210102"\cf1\lang9\par
+\lang1033 Default.h\lang9\par
+\par
+#ifdef\cf3  \cf5 DEFAULTS_GENERIC\par
+\cf3   \cf6 // Grbl generic default settings. Should work across different machines.\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_X_STEPS_PER_MM\cf3  \cf5 80.0\par
+\cf1   #define\cf3  \cf4 DEFAULT_Y_STEPS_PER_MM\cf3  \cf5 144.0\par
+\cf1   #define\cf3  \cf4 DEFAULT_Z_STEPS_PER_MM\cf3  \cf5 400.0\par
+\cf1   #define\cf3  \cf4 DEFAULT_X_MAX_RATE\cf3  \cf5 10000.0\cf3  \cf6 // mm/min\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_Y_MAX_RATE\cf3  \cf5 10000.0\cf3  \cf6 // mm/min\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_Z_MAX_RATE\cf3  \cf5 2000.0\cf3  \cf6 // mm/min\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_X_ACCELERATION\cf3  \cf5 (500.0*60*60)\cf3  \cf6 // 10*60*60 mm/min^2 = 10 mm/sec^2\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_Y_ACCELERATION\cf3  \cf5 (500.0*60*60)\cf3  \cf6 // 10*60*60 mm/min^2 = 10 mm/sec^2\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_Z_ACCELERATION\cf3  \cf5 (500.0*60*60)\cf3  \cf6 // 10*60*60 mm/min^2 = 10 mm/sec^2\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_X_MAX_TRAVEL\cf3  \cf5 610.0\cf3  \cf6 // mm NOTE: Must be a positive value.\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_Y_MAX_TRAVEL\cf3  \cf5 360.0\cf3  \cf6 // mm NOTE: Must be a positive value.\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_Z_MAX_TRAVEL\cf3  \cf5 85.0\cf3  \cf6 // mm NOTE: Must be a positive value.\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_SPINDLE_RPM_MAX\cf3  \cf5 1000.0\cf3  \cf6 // rpm\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_SPINDLE_RPM_MIN\cf3  \cf5 0.0\cf3  \cf6 // rpm\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_STEP_PULSE_MICROSECONDS\cf3  \cf5 10\par
+\cf1   #define\cf3  \cf4 DEFAULT_STEPPING_INVERT_MASK\cf3  \cf5 0\par
+\cf1   #define\cf3  \cf4 DEFAULT_DIRECTION_INVERT_MASK\cf3  \cf5 2\par
+\cf1   #define\cf3  \cf4 DEFAULT_STEPPER_IDLE_LOCK_TIME\cf3  \cf5 25\cf3  \cf6 // msec (0-254, 255 keeps steppers enabled)\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_STATUS_REPORT_MASK\cf3  \cf5 1\cf3  \cf6 // MPos enabled\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_JUNCTION_DEVIATION\cf3  \cf5 0.01\cf3  \cf6 // mm\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_ARC_TOLERANCE\cf3  \cf5 0.002\cf3  \cf6 // mm\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_REPORT_INCHES\cf3  \cf5 0\cf3  \cf6 // false\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_INVERT_ST_ENABLE\cf3  \cf5 0\cf3  \cf6 // false\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_INVERT_LIMIT_PINS\cf3  \cf5 1\cf3  \cf6 // false\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_SOFT_LIMIT_ENABLE\cf3  \cf5 1\cf3  \cf6 // false\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_HARD_LIMIT_ENABLE\cf3  \cf5 0\cf3   \cf6 // false\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_INVERT_PROBE_PIN\cf3  \cf5 0\cf3  \cf6 // false\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_LASER_MODE\cf3  \cf5 0\cf3  \cf6 // false\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_HOMING_ENABLE\cf3  \cf5 1\cf3   \cf6 // false\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_HOMING_DIR_MASK\cf3  \cf5 1\cf3  \cf6 // move positive dir\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_HOMING_FEED_RATE\cf3  \cf5 250.0\cf3  \cf6 // mm/min\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_HOMING_SEEK_RATE\cf3  \cf5 2000.0\cf3  \cf6 // mm/min\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_HOMING_DEBOUNCE_DELAY\cf3  \cf5 250\cf3  \cf6 // msec (0-65k)\cf5\par
+\cf1   #define\cf3  \cf4 DEFAULT_HOMING_PULLOFF\cf3  \cf5 5.0\cf3  \cf6 // mm\cf5\par
+\cf1 #endif\par
+\par
+\lang1033 Config.h\par
+#define\cf3  \cf4 HOMING_CYCLE_1\cf3  \cf5 (1<<\cf4 X_AXIS\cf5 )\cf3    //line 106\par
+\cf1 #define\cf3  \cf4 HOMING_FORCE_SET_ORIGIN   //line129\cf1\lang9\par
+\cf6\lang1033 //#define VARIABLE_SPINDLE // Default enabled. Comment to disable.//339\cf1\lang9\par
+\par
+\lang1033 Gcode.h\par
+\cf6 // Define parameter word mapping.\cf5\par
+\cf1 #define\cf3  \cf4 WORD_A\cf3   \cf5 13  //line 152\par
+\par
+\par
+motion_control.h\par
+\cf1 #define\cf3  \cf4 HOMING_CYCLE_A\cf3     \cf4 bit\cf5 (\cf4 A_AXIS\cf5 )   //line 32\par
+nuts_bolts.h\par
+\cf1 #define\cf3  \cf4 A_AXIS\cf3  \cf5 1  //line 33\par
+\par
+reports.c\par
+///line 39\par
+
+\pard\widctlpar\cf1 static\cf3  \cf1 void\cf3  \cf7 report_util_axis_values\cf5 (\cf1 float\cf3  \cf5 *\cf8 axis_value\cf5 )\cf3  \cf5\{   \par
+\cf3   \par
+    \cf7 printFloat_CoordValue\cf5 (\cf8 axis_value\cf5 [0]);\par
+\cf3       \cf7 printPgmString\cf5 (PSTR(\cf3 ",0.000,"\cf5 ));\par
+\cf3       \cf7 printFloat_CoordValue\cf5 (\cf8 axis_value\cf5 [2]);\par
+\cf3       \cf7 serial_write\cf5 (',');\par
+\cf3       \cf7 printFloat_CoordValue\cf5 (\cf8 axis_value\cf5 [1]);\par
+\cf3   \par
+\cf5\par
+
+\pard\nowidctlpar\sa200\sl276\slmult1\}\par
+\cf7 printPgmString\cf5 (PSTR(\cf3 "\\r\\n[MSG:Grbl_Revolution_BobsCNC]\\r\\n[MSG:Axis count 4]\\r\\n"\cf5 ));  //line 174\par
+\par
+\cf3    \cf1 if\cf3  \cf5 (\cf4 bit_istrue\cf5 (\cf8 lim_pin_state\cf5 ,\cf4 bit\cf5 (A_AXIS)))\cf3  \cf5\{\cf3  \cf7 serial_write\cf5 ('A');\cf3  \cf5\} //line 587\par
+\par
+Stepper.c\par
+\cf8 st\cf5 .\cf8 steps\cf5 [A_AXIS]\cf3  \cf5 =\cf3  \cf8 st\cf5 .\cf8 exec_block\cf5 ->\cf8 steps\cf5 [A_AXIS]\cf3  \cf5 >>\cf3  \cf8 st\cf5 .\cf8 exec_segment\cf5 ->\cf8 amass_level\cf5 ; //line 383\par
+\cf1\par
+
+\pard\widctlpar #ifdef\cf3  \cf4 ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING  //line 429\cf5\par
+\cf3     \cf8 st\cf5 .counter_y\cf3  \cf5 +=\cf3  \cf8 st\cf5 .\cf8 steps\cf5 [\cf4 A_AXIS\cf5 ];\par
+\cf1   #else\cf5\par
+\cf3     \cf8 st\cf5 .counter_y\cf3  \cf5 +=\cf3  \cf8 st\cf5 .\cf8 exec_block\cf5 ->\cf8 steps\cf5 [\cf4 A_AXIS\cf5 ];\par
+\cf1   #endif\cf5\par
+\cf3   \cf1 if\cf3  \cf5 (\cf8 st\cf5 .counter_y\cf3  \cf5 >\cf3  \cf8 st\cf5 .\cf8 exec_block\cf5 ->\cf8 step_event_count\cf5 )\cf3  \cf5\{\par
+\cf3     \cf8 st\cf5 .\cf8 step_outbits\cf3  \cf5 |=\cf3  \cf5 (1<<A_STEP_BIT);\par
+\par
+\cf3     \cf8 st\cf5 .counter_y\cf3  \cf5 -=\cf3  \cf8 st\cf5 .\cf8 exec_block\cf5 ->\cf8 step_event_count\cf5 ;\par
+\cf3     \cf1 if\cf3  \cf5 (\cf8 st\cf5 .\cf8 exec_block\cf5 ->\cf8 direction_bits\cf3  \cf5 &\cf3  \cf5 (1<<A_DIRECTION_BIT))\cf3  \cf5\{\cf3  \cf8 sys_position\cf5 [\cf4 A_AXIS\cf5 ]--;\cf3  \cf5\}\par
+
+\pard\nowidctlpar\sa200\sl276\slmult1\cf3     \cf1 else\cf3  \cf5\{\cf3  \cf8 sys_position\cf5 [\cf4 A_AXIS\cf5 ]++;\cf3  \cf5\}\cf1\par
+\cf5\par
+System.c   //line 345\par
+
+\pard\widctlpar\cf1 if\cf3  \cf5 (\cf4 bit_istrue\cf5 (\cf8 settings\cf5 .\cf8 homing_dir_mask\cf5 ,\cf4 bit\cf5 (\cf8 idx\cf5 ))\cf3  \cf5 &&\cf3  \cf8 idx\cf5 !=1)\cf3  \cf5\{\par
+\cf3         \cf1 if\cf3  \cf5 (target[\cf8 idx\cf5 ]\cf3  \cf5 <\cf3  \cf5 0\cf3  \cf5 ||\cf3  \cf5 target[\cf8 idx\cf5 ]\cf3  \cf5 >\cf3  \cf5 -\cf8 settings\cf5 .\cf8 max_travel\cf5 [\cf8 idx\cf5 ])\cf3  \cf5\{\cf3  \cf1 return\cf5 (true);\cf3  \cf5\}\par
+\cf3       \cf5\}\cf3  \cf1 else\cf3  \cf1 if\cf5 (\cf8 idx\cf5 !=1)\cf3  \cf5\{\par
+\cf3         \cf1 if\cf3  \cf5 (target[\cf8 idx\cf5 ]\cf3  \cf5 >\cf3  \cf5 0\cf3  \cf5 ||\cf3  \cf5 target[\cf8 idx\cf5 ]\cf3  \cf5 <\cf3  \cf8 settings\cf5 .\cf8 max_travel\cf5 [\cf8 idx\cf5 ])\cf3  \cf5\{\cf3  \cf1 return\cf5 (true);\cf3  \cf5\}\par
+
+\pard\nowidctlpar\sa200\sl276\slmult1\cf3       \cf5\}Gcode.c\par
+\par
+\cf1 case\cf3  \cf5 'A':\cf3  \cf8 word_bit\cf3  \cf5 =\cf3  \cf4 WORD_A\cf5 ;\cf3  \cf8 gc_block\cf5 .\cf8 values\cf5 .\cf8 xyz\cf5 [\cf4 A_AXIS\cf5 ]\cf3  \cf5 =\cf3  \cf8 value\cf5 ;\cf3  \cf8 axis_words\cf3  \cf5 |=\cf3  \cf5 (1<<\cf4 A_AXIS\cf5 );\cf3  \cf1 break\cf5 ; //line 299\par
+\cf1 case\cf3  \cf5 'J':\cf3  \cf8 word_bit\cf3  \cf5 =\cf3  \cf4 WORD_J\cf5 ;\cf3  \cf8 gc_block\cf5 .\cf8 values\cf5 .\cf8 ijk\cf5 [\cf4 A_AXIS\cf5 ]\cf3  \cf5 =\cf3  \cf8 value\cf5 ;\cf3  \cf8 ijk_words\cf3  \cf5 |=\cf3  \cf5 (1<<\cf4 A_AXIS\cf5 );\cf3  \cf1 break\cf5 ; //306\par
+Remove the Y with //\par
+\par
+\cf3   \cf6 // [11. Set active plane ]: N/A  //line 455\cf5\par
+\cf3   \cf1 switch\cf3  \cf5 (\cf8 gc_block\cf5 .\cf8 modal\cf5 .\cf8 plane_select\cf5 )\cf3  \cf5\{\par
+\cf3     \cf1 case\cf3  \cf4 PLANE_SELECT_XY\cf5 :\par
+\cf3       \cf8 axis_0\cf3  \cf5 =\cf3  \cf4 X_AXIS\cf5 ;\par
+\cf3       \cf8 axis_1\cf3  \cf5 =\cf3  \cf5 A_AXIS;\par
+\cf3       \cf8 axis_linear\cf3  \cf5 =\cf3  \cf4 Z_AXIS\cf5 ;\par
+\cf3       \cf1 break\cf5 ;\par
+\cf3       \cf1 default\cf5 :\cf3  \cf6 // default\cf5\par
+\cf3        \cf8 axis_0\cf3  \cf5 =\cf3  \cf4 X_AXIS\cf5 ;\par
+\cf3        \cf8 axis_1\cf3  \cf5 =\cf3  \cf5 A_AXIS;\par
+\cf3        \cf8 axis_linear\cf3  \cf5 =\cf3  \cf4 Z_AXIS\cf5 ;\par
+\par
+\cf3   \cf1 if\cf3  \cf5 (\cf8 axis_command\cf5 )\cf3  \cf5\{\cf3  \cf4 bit_false\cf5 (\cf8 value_words\cf5 ,(\cf4 bit\cf5 (\cf4 WORD_X\cf5 )|\cf4 bit\cf5 (\cf4 WORD_A\cf5 )|\cf4 bit\cf5 (\cf4 WORD_Z\cf5 )));\cf3  \cf5\}\cf3  \cf6 // Remove axis words. //830\cf5\par
+\par
+Settings.c\par
+\cf3     \cf5 .\cf8 steps_per_mm\cf5 [\cf4 A_AXIS\cf5 ]\cf3  \cf5 =\cf3  \cf5 DEFAULT_A_STEPS_PER_MM,  //line 50\par
+\cf3     \cf5 .\cf8 max_rate\cf5 [\cf4 A_AXIS\cf5 ]\cf3  \cf5 =\cf3  \cf5 DEFAULT_A_MAX_RATE,  // line 53\par
+\cf3     \cf5 .\cf8 acceleration\cf5 [\cf4 A_AXIS\cf5 ]\cf3  \cf5 =\cf3  \cf5 DEFAULT_A_ACCELERATION, //line 56\par
+\cf3     \cf5 .\cf8 max_travel\cf5 [\cf4 A_AXIS\cf5 ]\cf3  \cf5 =\cf3  \cf5 (-DEFAULT_A_MAX_TRAVEL),  //line 59\par
+\par
+\cf3   \cf1 if\cf3  \cf5 (\cf3  \cf8 axis_idx\cf3  \cf5 ==\cf3  \cf4 A_AXIS\cf3  \cf5 )\cf3  \cf5\{\cf3  \cf1 return\cf5 ((1<<A_STEP_BIT));\cf3  \cf5\}  //line 320\par
+\cf3   \cf1 if\cf3  \cf5 (\cf3  \cf8 axis_idx\cf3  \cf5 ==\cf3  \cf4 A_AXIS\cf3  \cf5 )\cf3  \cf5\{\cf3  \cf1 return\cf5 ((1<<A_DIRECTION_BIT));\cf3  \cf5\}  //line 329\par
+\cf3   \cf1 if\cf3  \cf5 (\cf3  \cf8 axis_idx\cf3  \cf5 ==\cf3  \cf4 A_AXIS\cf3  \cf5 )\cf3  \cf5\{\cf3  \cf1 return\cf5 ((1<<A_LIMIT_BIT));\cf3  \cf5\}  //line 338\par
+\par
+\par
+cpu_map.h\par
+\cf1  #define\cf3  \cf4 A_STEP_BIT\cf3       \cf5 3\cf3   \cf6 // Uno Digital Pin 3  //line40\par
+\cf1 #define\cf3  \cf4 STEP_MASK\cf3        \cf5 ((1<<\cf4 X_STEP_BIT\cf5 )|(1<<\cf4 A_STEP_BIT\cf5 )|(1<<\cf4 Z_STEP_BIT\cf5 ))\cf3  \cf6 // All step bits line 42\par
+\cf1   #define\cf3  \cf4 A_DIRECTION_BIT\cf3    \cf5 6\cf3   \cf6 // Uno Digital Pin 6  //line 48\par
+\cf1 #define\cf3  \cf4 DIRECTION_MASK\cf3     \cf5 ((1<<\cf4 X_DIRECTION_BIT\cf5 )|(1<<\cf4 A_DIRECTION_BIT\cf5 )|(1<<\cf4 Z_DIRECTION_BIT\cf5 ))\cf3  \cf6 // All direction bits  line 50\par
+\cf1   #define\cf3  \cf4 A_LIMIT_BIT\cf3       \cf5 2\cf3   \cf6 // Uno Digital Pin 10\highlight0   //line 64\par
+\cf1\highlight2   #define\cf3  \cf4 LIMIT_MASK\cf3      \cf5 ((1<<\cf4 X_LIMIT_BIT\cf5 )|(1<<\cf4 A_LIMIT_BIT\cf5 )|(1<<\cf4 Z_LIMIT_BIT\cf5 ))\cf3  \cf6 // All limit bits\highlight0   // line 71\par
+\par
+\par
+\cf0 gcode.c\par
+line 470\par
+  uint8_t idx;\par
+  if (gc_block.modal.units == UNITS_MODE_INCHES) \{\par
+     if (bit_istrue(axis_words,bit(0)) ) \{     ///X axis\par
+        gc_block.values.xyz[0] *= MM_PER_INCH;\par
+      \}\par
+     if (bit_istrue(axis_words,bit(2)) ) \{\par
+        gc_block.values.xyz[2] *= MM_PER_INCH;  //Z axis\par
+      \}\par
+        // no conversion for the A axis\par
+  \}\par
+\par
+line 784\par
+\par
+  // Convert IJK values to proper units.\par
+            if (gc_block.modal.units == UNITS_MODE_INCHES) \{\par
+                if (ijk_words & bit(0)) \{ gc_block.values.ijk[0] *= MM_PER_INCH; \}  // X axis\par
+                if (ijk_words & bit(2)) \{ gc_block.values.ijk[2] *= MM_PER_INCH; \} // Z axis\par
+                // A axis doe not get converted\par
+            \}\f1\fs22\lang9\par
+}
+ 
