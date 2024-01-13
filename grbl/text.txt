@@ -1,0 +1,579 @@
+
+add backlash.h
+*****************************************
+#include "nuts_bolts.h"
+
+/*
+ * backlash.h
+ *
+ *  Author: Jeff Dill
+ */ 
+#ifndef BACKLASH_H_
+#define BACKLASH_H_
+typedef	struct  
+{
+	uint8_t axis_has_compensation;
+	//int8_t new_comp_direction[N_AXIS];
+	int8_t last_comp_direction[N_AXIS];
+	float comp_per_axis_mm[N_AXIS];
+}s_back_lash;
+extern s_back_lash back_lash_compensation;
+void backlash_initialize();
+void backlash_comp(float *target, plan_line_data_t *pl_data);
+#endif /* BACKLASH_H_ */
+
+*************************************************
+add backlash.c
+*****************************************************
+#include <string.h>
+//#include "backlash.h"
+#include "grbl.h"
+/*
+* backlash.c
+*
+*  Author: Jeff Dill
+*/
+
+s_back_lash back_lash_compensation;
+void backlash_initialize()
+{
+	//memset(back_lash_compensation.new_comp_direction,0,sizeof(back_lash_compensation.new_comp_direction));
+	memset(back_lash_compensation.last_comp_direction,0,sizeof(back_lash_compensation.last_comp_direction));
+	memset(back_lash_compensation.comp_per_axis_mm,0,sizeof(back_lash_compensation.comp_per_axis_mm));
+}
+
+void backlash_comp(float *target, plan_line_data_t *pl_data)
+{
+	int32_t target_steps[N_AXIS];
+	int32_t *position_steps;
+#if 1
+	// original code needs correction...
+	int32_t position_tmp[N_AXIS];
+#endif
+	
+	if (pl_data->condition & PL_COND_FLAG_SYSTEM_MOTION)
+	{
+#if 1
+		position_steps = position_tmp;
+#endif
+		#ifdef COREXY
+		position_steps[X_AXIS] = system_convert_corexy_to_x_axis_steps(sys_position);
+		position_steps[Y_AXIS] = system_convert_corexy_to_y_axis_steps(sys_position);
+		position_steps[Z_AXIS] = sys_position[Z_AXIS];
+		#else
+		memcpy(position_steps, sys_position, sizeof(sys_position));
+		#endif
+	}
+	else
+	{
+		position_steps = plan_get_position();
+	}
+	
+	uint8_t idx=0;
+	uint8_t needs_comp = 0;
+	
+	//printString("checking comp loop\r");
+	for (idx = 0;idx<N_AXIS;idx++)
+	{
+		//Must clear this or the next time we do a comp move we will still have any prior axis comps in there!
+		back_lash_compensation.comp_per_axis_mm[idx] = 0;// target[idx];
+		target_steps[idx] = lround(target[idx] * settings.steps_per_mm[idx]);
+		//see if we are moving at all
+		int32_t step_diff=(target_steps[idx] - position_steps[idx]);
+		//if moving is it a + or - movement
+		step_diff = step_diff>0?1:(step_diff<0?-1:0);
+		//if last direction is different than the new direction, and its not 0, we need to comp.
+		if (back_lash_compensation.last_comp_direction[idx]!=0 && step_diff!=0
+		&& (back_lash_compensation.last_comp_direction[idx] !=step_diff))
+		{
+			back_lash_compensation.comp_per_axis_mm[idx] = settings.backlash_per_axis[idx]*step_diff;
+			//printString("axis ");
+			//printInteger(idx);
+			//printString(" set for comp ");
+			//printFloat(back_lash_compensation.comp_per_axis_mm[idx], 2);
+			//printString("\r\n");
+			needs_comp = 1;
+		}
+	}
+	if (needs_comp)
+	{
+		
+		float new_target[N_AXIS];
+		memcpy(new_target,back_lash_compensation.comp_per_axis_mm,sizeof(back_lash_compensation.comp_per_axis_mm));
+		plan_line_data_t new_plan;
+		plan_line_data_t *new_pl = &new_plan;
+		memcpy(new_pl,pl_data,sizeof(plan_line_data_t));
+		new_plan.condition=(1<<PL_COND_FLAG_BACKLASH_COMP);
+		new_plan.condition |= PL_COND_FLAG_RAPID_MOTION;
+		mc_line(new_target,&new_plan);
+	}
+	
+}
+
+*****************************************************
+defaults.h	
+*****************************************************
+   #define DEFAULT_X_BACKLASH_MM 0.0
+   #define DEFAULT_Y_BACKLASH_MM 0.0
+   #define DEFAULT_Z_BACKLASH_MM 0.0
+
+**************************************************
+grbl.h
+***************************************************
+ #include "backlash.h"
+***************************************************
+ main.c
+********************************
+	backlash_initialize();
+*************************************************
+motion_control.c
+**************************************************
+
+    // from everywhere in Grbl.
+    if (bit_istrue(settings.flags,BITFLAG_SOFT_LIMIT_ENABLE)) {
+      // NOTE: Block jog state. Jogging is a special case and soft limits are handled independently.
+! #if defined(BACKLASH_COMP)
+! 	// And NO soft limits check at backlash comp
+! 	if (sys.state != STATE_JOG && !(pl_data->condition & (1<<PL_COND_FLAG_BACKLASH_COMP))) { limits_soft_check(target); }
+! #else
+! 	if (sys.state != STATE_JOG) { limits_soft_check(target); }
+! #endif
+    }
+  
+    // If in check gcode mode, prevent motion by blocking planner. Soft limits still work.
+***************
+*** 54,59 ****
+--- 59,75 ----
+    // indicates to Grbl what is a backlash compensation motion, so that Grbl executes the move but
+    // doesn't update the machine position values. Since the position values used by the g-code
+    // parser and planner are separate from the system machine positions, this is doable.
++ #ifdef BACKLASH_COMP
++ 	//Determines if the motion we are about to execute has an axis moving in the opposite direction
++ 	//If it does, the value in settings for that axis is used to determine how far it needs to move
++ 	//to take up the mechanical slack in the motion for that axis.
++ 	//This could be a re-entrant call from backlash comp, so if it is, we dont want to 'comp the comp move'
++ 	if (!(pl_data->condition &(1<<PL_COND_FLAG_BACKLASH_COMP)))
++ 	{
++ 		backlash_comp(target,pl_data);
++ 	}
++ 	
++ #endif
+  
+    // If the buffer is full: good! That means we are well ahead of the robot.
+    // Remain in this loop until there is room in the buffer.
+diff -c grbl/planner.c bklc/planner.c
+*** grbl/planner.c	2021-01-23 09:13:48.000000000 +0900
+--- bklc/planner.c	2022-05-19 00:02:58.000000000 +0900
+***************
+*** 39,44 ****
+--- 39,51 ----
+  } planner_t;
+  static planner_t pl;
+  
++ #ifdef BACKLASH_COMP
++ int32_t *plan_get_position()
++ {
++ 	return pl.position;
++ }
++ #endif
++ 
+  
+  // Returns the index of the next block in the ring buffer. Also called by stepper segment buffer.
+  uint8_t plan_next_block_index(uint8_t block_index)
+***************
+*** 330,335 ****
+--- 337,348 ----
+    float unit_vec[N_AXIS], delta_mm;
+    uint8_t idx;
+  
++ #ifdef BACKLASH_COMP
++ 	if ((pl_data->condition &(1<<PL_COND_FLAG_BACKLASH_COMP)))
++ 	block->back_lash_comp = 1;
++ 	
++ 	memset(position_steps,0,sizeof(position_steps));
++ #endif
+    // Copy position data based on type of motion being planned.
+    if (block->condition & PL_COND_FLAG_SYSTEM_MOTION) { 
+      #ifdef COREXY
+***************
+*** 339,345 ****
+      #else
+        memcpy(position_steps, sys_position, sizeof(sys_position)); 
+      #endif
+!   } else { memcpy(position_steps, pl.position, sizeof(pl.position)); }
+  
+    #ifdef COREXY
+      target_steps[A_MOTOR] = lround(target[A_MOTOR]*settings.steps_per_mm[A_MOTOR]);
+--- 352,366 ----
+      #else
+        memcpy(position_steps, sys_position, sizeof(sys_position)); 
+      #endif
+!   } else {
+! #ifdef BACKLASH_COMP
+! 		//If compensated motion, assume we are starting from zero.
+! 		if (!block->back_lash_comp)
+! 		memcpy(position_steps, pl.position, sizeof(pl.position));
+! #else
+! 		memcpy(position_steps, pl.position, sizeof(pl.position));
+! #endif
+!   }
+  
+    #ifdef COREXY
+      target_steps[A_MOTOR] = lround(target[A_MOTOR]*settings.steps_per_mm[A_MOTOR]);
+***************
+*** 372,380 ****
+        delta_mm = (target_steps[idx] - position_steps[idx])/settings.steps_per_mm[idx];
+  	  #endif
+      unit_vec[idx] = delta_mm; // Store unit vector numerator
+! 
+      // Set direction bits. Bit enabled always means direction is negative.
+!     if (delta_mm < 0.0 ) { block->direction_bits |= get_direction_pin_mask(idx); }
+    }
+  
+    // Bail if this is a zero-length block. Highly unlikely to occur.
+--- 393,409 ----
+        delta_mm = (target_steps[idx] - position_steps[idx])/settings.steps_per_mm[idx];
+  	  #endif
+      unit_vec[idx] = delta_mm; // Store unit vector numerator
+! #ifdef BACKLASH_COMP
+! 		if (delta_mm!=0)
+! 		back_lash_compensation.last_comp_direction[idx] = 1;
+! #endif
+      // Set direction bits. Bit enabled always means direction is negative.
+!     if (delta_mm < 0.0 ) {
+! 		block->direction_bits |= get_direction_pin_mask(idx);
+! #ifdef BACKLASH_COMP
+! 		back_lash_compensation.last_comp_direction[idx] = -1;
+! #endif
+! 	}
+    }
+  
+    // Bail if this is a zero-length block. Highly unlikely to occur.
+***************
+*** 459,465 ****
+      
+      // Update previous path unit_vector and planner position.
+      memcpy(pl.previous_unit_vec, unit_vec, sizeof(unit_vec)); // pl.previous_unit_vec[] = unit_vec[]
+!     memcpy(pl.position, target_steps, sizeof(target_steps)); // pl.position[] = target_steps[]
+  
+      // New block is all set. Update buffer head and next buffer head indices.
+      block_buffer_head = next_buffer_head;
+--- 488,502 ----
+      
+      // Update previous path unit_vector and planner position.
+      memcpy(pl.previous_unit_vec, unit_vec, sizeof(unit_vec)); // pl.previous_unit_vec[] = unit_vec[]
+! 
+! #ifdef BACKLASH_COMP
+! 	//Dont update the planner position for blc. This move should be unknown to the planner.
+! 	//This should still allow the planner to string the motions together though.
+! 	if (!(block->back_lash_comp))
+! 	memcpy(pl.position, target_steps, sizeof(target_steps)); // pl.position[] = target_steps[]
+! #else
+! 	memcpy(pl.position, target_steps, sizeof(target_steps)); // pl.position[] = target_steps[]
+! #endif
+  
+      // New block is all set. Update buffer head and next buffer head indices.
+      block_buffer_head = next_buffer_head;
+diff -c grbl/planner.h bklc/planner.h
+*** grbl/planner.h	2021-01-23 09:13:48.000000000 +0900
+--- bklc/planner.h	2022-05-18 20:54:11.000000000 +0900
+***************
+*** 45,50 ****
+--- 45,53 ----
+  #define PL_COND_FLAG_SPINDLE_CCW       bit(5)
+  #define PL_COND_FLAG_COOLANT_FLOOD     bit(6)
+  #define PL_COND_FLAG_COOLANT_MIST      bit(7)
++ #ifdef BACKLASH_COMP
++ #define PL_COND_FLAG_BACKLASH_COMP     8
++ #endif
+  #define PL_COND_MOTION_MASK    (PL_COND_FLAG_RAPID_MOTION|PL_COND_FLAG_SYSTEM_MOTION|PL_COND_FLAG_NO_FEED_OVERRIDE)
+  #define PL_COND_SPINDLE_MASK   (PL_COND_FLAG_SPINDLE_CW|PL_COND_FLAG_SPINDLE_CCW)
+  #define PL_COND_ACCESSORY_MASK (PL_COND_FLAG_SPINDLE_CW|PL_COND_FLAG_SPINDLE_CCW|PL_COND_FLAG_COOLANT_FLOOD|PL_COND_FLAG_COOLANT_MIST)
+***************
+*** 83,88 ****
+--- 86,94 ----
+      // Stored spindle speed data used by spindle overrides and resuming methods.
+      float spindle_speed;    // Block spindle speed. Copied from pl_line_data.
+    #endif
++ #ifdef BACKLASH_COMP
++   uint8_t back_lash_comp;
++ #endif
+  } plan_block_t;
+  
+  
+***************
+*** 90,101 ****
+  typedef struct {
+    float feed_rate;          // Desired feed rate for line motion. Value is ignored, if rapid motion.
+    float spindle_speed;      // Desired spindle speed through line motion.
+-   uint8_t condition;        // Bitflag variable to indicate planner conditions. See defines above.
+    #ifdef USE_LINE_NUMBERS
+      int32_t line_number;    // Desired line number to report when executing.
+    #endif
+  } plan_line_data_t;
+  
+  
+  // Initialize and reset the motion plan subsystem
+  void plan_reset(); // Reset all
+--- 96,114 ----
+  typedef struct {
+    float feed_rate;          // Desired feed rate for line motion. Value is ignored, if rapid motion.
+    float spindle_speed;      // Desired spindle speed through line motion.
+    #ifdef USE_LINE_NUMBERS
+      int32_t line_number;    // Desired line number to report when executing.
+    #endif
++ #ifdef BACKLASH_COMP
++   uint16_t condition;        // Bitflag variable to indicate planner conditions. See defines above.
++ #else
++   uint8_t condition;        // Bitflag variable to indicate planner conditions. See defines above.
++ #endif
+  } plan_line_data_t;
+  
++ #ifdef BACKLASH_COMP
++ int32_t * plan_get_position();
++ #endif
+  
+  // Initialize and reset the motion plan subsystem
+  void plan_reset(); // Reset all
+diff -c grbl/report.c bklc/report.c
+*** grbl/report.c	2021-01-23 09:13:48.000000000 +0900
+--- bklc/report.c	2022-05-18 22:41:04.000000000 +0900
+***************
+*** 169,175 ****
+--- 169,179 ----
+  // Welcome message
+  void report_init_message()
+  {
++ #ifdef BACKLASH_COMP
++   printPgmString(PSTR("\r\nGrbl " GRBL_VERSION "(backlash comp) ['$' for help]\r\n"));
++ #else
+    printPgmString(PSTR("\r\nGrbl " GRBL_VERSION " ['$' for help]\r\n"));
++ #endif
+  }
+  
+  // Grbl help message
+***************
+*** 218,223 ****
+--- 222,230 ----
+          case 1: report_util_float_setting(val+idx,settings.max_rate[idx],N_DECIMAL_SETTINGVALUE); break;
+          case 2: report_util_float_setting(val+idx,settings.acceleration[idx]/(60*60),N_DECIMAL_SETTINGVALUE); break;
+          case 3: report_util_float_setting(val+idx,-settings.max_travel[idx],N_DECIMAL_SETTINGVALUE); break;
++ #if defined(BACKLASH_COMP)
++         case 4: report_util_float_setting(val+idx,settings.backlash_per_axis[idx],N_DECIMAL_SETTINGVALUE); break;
++ #endif
+        }
+      }
+      val += AXIS_SETTINGS_INCREMENT;
+diff -c grbl/settings.c bklc/settings.c
+*** grbl/settings.c	2021-01-23 09:13:48.000000000 +0900
+--- bklc/settings.c	2022-05-18 22:39:07.000000000 +0900
+***************
+*** 57,64 ****
+      .acceleration[Z_AXIS] = DEFAULT_Z_ACCELERATION,
+      .max_travel[X_AXIS] = (-DEFAULT_X_MAX_TRAVEL),
+      .max_travel[Y_AXIS] = (-DEFAULT_Y_MAX_TRAVEL),
+!     .max_travel[Z_AXIS] = (-DEFAULT_Z_MAX_TRAVEL)};
+! 
+  
+  // Method to store startup lines into EEPROM
+  void settings_store_startup_line(uint8_t n, char *line)
+--- 57,69 ----
+      .acceleration[Z_AXIS] = DEFAULT_Z_ACCELERATION,
+      .max_travel[X_AXIS] = (-DEFAULT_X_MAX_TRAVEL),
+      .max_travel[Y_AXIS] = (-DEFAULT_Y_MAX_TRAVEL),
+!     .max_travel[Z_AXIS] = (-DEFAULT_Z_MAX_TRAVEL),
+! #if defined(BACKLASH_COMP)
+! 	.backlash_per_axis[X_AXIS]=DEFAULT_X_BACKLASH_MM,
+! 	.backlash_per_axis[Y_AXIS]=DEFAULT_Y_BACKLASH_MM,
+! 	.backlash_per_axis[Z_AXIS]=DEFAULT_Z_BACKLASH_MM,
+! #endif
+! };
+  
+  // Method to store startup lines into EEPROM
+  void settings_store_startup_line(uint8_t n, char *line)
+***************
+*** 215,221 ****
+              break;
+            case 2: settings.acceleration[parameter] = value*60*60; break; // Convert to mm/min^2 for grbl internal use.
+            case 3: settings.max_travel[parameter] = -value; break;  // Store as negative for grbl internal use.
+!         }
+          break; // Exit while-loop after setting has been configured and proceed to the EEPROM write call.
+        } else {
+          set_idx++;
+--- 220,229 ----
+              break;
+            case 2: settings.acceleration[parameter] = value*60*60; break; // Convert to mm/min^2 for grbl internal use.
+            case 3: settings.max_travel[parameter] = -value; break;  // Store as negative for grbl internal use.
+! #if defined(BACKLASH_COMP)
+! 		  case 4: settings.backlash_per_axis[parameter] = value; break;  
+! #endif
+! 		}
+          break; // Exit while-loop after setting has been configured and proceed to the EEPROM write call.
+        } else {
+          set_idx++;
+diff -c grbl/settings.h bklc/settings.h
+*** grbl/settings.h	2021-01-23 09:13:48.000000000 +0900
+--- bklc/settings.h	2022-05-18 22:39:49.000000000 +0900
+***************
+*** 79,85 ****
+--- 79,89 ----
+  // #define SETTING_INDEX_G92    N_COORDINATE_SYSTEM+2  // Coordinate offset (G92.2,G92.3 not supported)
+  
+  // Define Grbl axis settings numbering scheme. Starts at START_VAL, every INCREMENT, over N_SETTINGS.
++ #if defined(BACKLASH_COMP)
++ #define AXIS_N_SETTINGS          5
++ #else
+  #define AXIS_N_SETTINGS          4
++ #endif
+  #define AXIS_SETTINGS_START_VAL  100 // NOTE: Reserving settings values >= 100 for axis settings. Up to 255.
+  #define AXIS_SETTINGS_INCREMENT  10  // Must be greater than the number of axis settings
+  
+***************
+*** 87,92 ****
+--- 91,99 ----
+  typedef struct {
+    // Axis settings
+    float steps_per_mm[N_AXIS];
++ #if defined(BACKLASH_COMP)
++   float backlash_per_axis[N_AXIS];
++ #endif
+    float max_rate[N_AXIS];
+    float acceleration[N_AXIS];
+    float max_travel[N_AXIS];
+diff -c grbl/stepper.c bklc/stepper.c
+*** grbl/stepper.c	2021-01-23 09:13:48.000000000 +0900
+--- bklc/stepper.c	2022-05-17 09:32:22.000000000 +0900
+***************
+*** 73,78 ****
+--- 73,81 ----
+    #ifdef VARIABLE_SPINDLE
+      uint8_t is_pwm_rate_adjusted; // Tracks motions that require constant laser power/rate
+    #endif
++ #ifdef BACKLASH_COMP
++ 	uint8_t back_lash_comp;
++ #endif
+  } st_block_t;
+  static st_block_t st_block_buffer[SEGMENT_BUFFER_SIZE-1];
+  
+***************
+*** 423,430 ****
+        st.step_outbits_dual = (1<<DUAL_STEP_BIT);
+      #endif
+      st.counter_x -= st.exec_block->step_event_count;
+!     if (st.exec_block->direction_bits & (1<<X_DIRECTION_BIT)) { sys_position[X_AXIS]--; }
+!     else { sys_position[X_AXIS]++; }
+    }
+    #ifdef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
+      st.counter_y += st.steps[Y_AXIS];
+--- 426,441 ----
+        st.step_outbits_dual = (1<<DUAL_STEP_BIT);
+      #endif
+      st.counter_x -= st.exec_block->step_event_count;
+! #ifdef BACKLASH_COMP
+! 	//Dont update system position data until all backlash steps are taken up.
+! 	if (!st.exec_block->back_lash_comp)
+! 	{
+! #endif
+! 	    if (st.exec_block->direction_bits & (1<<X_DIRECTION_BIT)) { sys_position[X_AXIS]--; }
+! 	    else { sys_position[X_AXIS]++; }
+! #ifdef BACKLASH_COMP
+! 	}
+! #endif
+    }
+    #ifdef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
+      st.counter_y += st.steps[Y_AXIS];
+***************
+*** 437,444 ****
+        st.step_outbits_dual = (1<<DUAL_STEP_BIT);
+      #endif
+      st.counter_y -= st.exec_block->step_event_count;
+!     if (st.exec_block->direction_bits & (1<<Y_DIRECTION_BIT)) { sys_position[Y_AXIS]--; }
+!     else { sys_position[Y_AXIS]++; }
+    }
+    #ifdef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
+      st.counter_z += st.steps[Z_AXIS];
+--- 448,463 ----
+        st.step_outbits_dual = (1<<DUAL_STEP_BIT);
+      #endif
+      st.counter_y -= st.exec_block->step_event_count;
+! #ifdef BACKLASH_COMP
+! 	//Dont update system position data until all backlash steps are taken up.
+! 	if (!st.exec_block->back_lash_comp)
+! 	{
+! #endif
+! 	    if (st.exec_block->direction_bits & (1<<Y_DIRECTION_BIT)) { sys_position[Y_AXIS]--; }
+!    		else { sys_position[Y_AXIS]++; }
+! #ifdef BACKLASH_COMP
+! 	}
+! #endif
+    }
+    #ifdef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
+      st.counter_z += st.steps[Z_AXIS];
+***************
+*** 448,455 ****
+    if (st.counter_z > st.exec_block->step_event_count) {
+      st.step_outbits |= (1<<Z_STEP_BIT);
+      st.counter_z -= st.exec_block->step_event_count;
+!     if (st.exec_block->direction_bits & (1<<Z_DIRECTION_BIT)) { sys_position[Z_AXIS]--; }
+!     else { sys_position[Z_AXIS]++; }
+    }
+  
+    // During a homing cycle, lock out and prevent desired axes from moving.
+--- 467,482 ----
+    if (st.counter_z > st.exec_block->step_event_count) {
+      st.step_outbits |= (1<<Z_STEP_BIT);
+      st.counter_z -= st.exec_block->step_event_count;
+! #ifdef BACKLASH_COMP
+! 	//Dont update system position data until all backlash steps are taken up.
+! 	if (!st.exec_block->back_lash_comp)
+! 	{
+! #endif
+! 	    if (st.exec_block->direction_bits & (1<<Z_DIRECTION_BIT)) { sys_position[Z_AXIS]--; }
+! 	    else { sys_position[Z_AXIS]++; }
+! #ifdef BACKLASH_COMP
+! 	}
+! #endif
+    }
+  
+    // During a homing cycle, lock out and prevent desired axes from moving.
+***************
+*** 711,723 ****
+          #endif
+          uint8_t idx;
+          #ifndef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
+!           for (idx=0; idx<N_AXIS; idx++) { st_prep_block->steps[idx] = (pl_block->steps[idx] << 1); }
+            st_prep_block->step_event_count = (pl_block->step_event_count << 1);
+          #else
+            // With AMASS enabled, simply bit-shift multiply all Bresenham data by the max AMASS
+            // level, such that we never divide beyond the original data anywhere in the algorithm.
+            // If the original data is divided, we can lose a step from integer roundoff.
+!           for (idx=0; idx<N_AXIS; idx++) { st_prep_block->steps[idx] = pl_block->steps[idx] << MAX_AMASS_LEVEL; }
+            st_prep_block->step_event_count = pl_block->step_event_count << MAX_AMASS_LEVEL;
+          #endif
+  
+--- 738,762 ----
+          #endif
+          uint8_t idx;
+          #ifndef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
+!           for (idx=0; idx<N_AXIS; idx++)
+! 		  {
+! 			st_prep_block->steps[idx] = (pl_block->steps[idx] << 1);
+! #ifdef BACKLASH_COMP
+! 			st_prep_block->back_lash_comp = pl_block->back_lash_comp;
+! #endif
+! 		  }
+            st_prep_block->step_event_count = (pl_block->step_event_count << 1);
+          #else
+            // With AMASS enabled, simply bit-shift multiply all Bresenham data by the max AMASS
+            // level, such that we never divide beyond the original data anywhere in the algorithm.
+            // If the original data is divided, we can lose a step from integer roundoff.
+!           for (idx=0; idx<N_AXIS; idx++)
+! 		  {
+! 			st_prep_block->steps[idx] = pl_block->steps[idx] << MAX_AMASS_LEVEL;
+! #ifdef BACKLASH_COMP
+! 			st_prep_block->back_lash_comp = pl_block->back_lash_comp;
+! #endif
+! 		  }
+            st_prep_block->step_event_count = pl_block->step_event_count << MAX_AMASS_LEVEL;
+          #endif
+  
